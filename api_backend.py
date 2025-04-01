@@ -126,6 +126,35 @@ def ensure_chrome_alive():
         return True
     return False
 
+def navigate_to_url(url):
+    """Navigate to a specific ChatGPT URL while ensuring the driver is alive.
+    
+    Args:
+        url (str): The full URL to navigate to. Should be a chat.openai.com URL.
+        
+    Returns:
+        bool: True if navigation was successful, False otherwise.
+    """
+    global driver
+    try:
+        if not ensure_chrome_alive():
+            raise Exception("Failed to ensure Chrome is alive")
+            
+        # Validate URL format
+        if not any(url.startswith(prefix) for prefix in ["https://chat.openai.com", "https://chatgpt.com"]):
+            raise ValueError("URL must be a chat.openai.com or chatgpt.com URL")
+            
+        driver.get(url)
+        logging.info(f"Successfully navigated to: {url}")
+        
+        # Give the page time to load and stabilize
+        time.sleep(1.5)
+        return True
+        
+    except Exception as e:
+        logging.error(f"Failed to navigate to URL: {str(e)}")
+        return False
+
 def is_response_complete():
     """Check if the response is complete using multiple methods."""
     try:
